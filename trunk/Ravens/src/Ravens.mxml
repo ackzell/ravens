@@ -21,7 +21,7 @@
 	</fx:Script>
 	
 	
-	<mx:Canvas  width="800" height="600" id="boardCanvas">
+	<mx:Canvas  width="800" height="600" id="boardCanvas" backgroundColor="#DCE9FF">
 		
 	</mx:Canvas>
 	
