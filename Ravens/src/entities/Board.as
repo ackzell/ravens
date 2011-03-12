@@ -186,7 +186,7 @@ package entities
 			
 			this.updateBoard();
 			
-			ravensArr[1].moveToTarget(10);
+			//ravensArr[1].moveToTarget(10);
 
 		}
 		
