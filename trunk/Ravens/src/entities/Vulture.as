@@ -1,5 +1,6 @@
 package entities
 {
+	import com.greensock.*;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -53,6 +54,23 @@ package entities
 				trace("Vulture on: ", this.currentTarget);
 				Board(this.parent).updateBoard();
 			}
+		}
+		
+		public function moveToTarget(target:int):void
+		{
+			var newX:Number;
+			var newY:Number;
+			
+			newX = Target(Board(this.parent).targetArr[target-1]).x;
+			newY = Target(Board(this.parent).targetArr[target-1]).y;
+			
+			TweenLite.to(this, 0.5, {x: newX, y: newY});
+			
+		}
+		
+		public function eatRaven():void
+		{
+			
 		}
 	}
 }

@@ -1,8 +1,11 @@
 package entities
 {
 	import collections.HashMap;
+	
 	import com.greensock.*;
+	
 	import flash.display.Shape;
+	
 	import mx.core.UIComponent;
 	import mx.graphics.RadialGradient;
 	
@@ -22,6 +25,9 @@ package entities
 		 * Para la posición 1, se tiene el par (1, [6, 7]) dado que desde la posición 1 podría haber movimiento hacia la posición 6 o la 7.
 		 * */
 		public var map:HashMap;
+		
+		
+		public var Vmap:HashMap;
 		
 		/**
 		 * El arreglo que contiene a los cuervos.
@@ -149,6 +155,20 @@ package entities
 			map.put(8, new Array(10,3,6,5));
 			map.put(9, new Array(10,4,2,7));
 			map.put(10, new Array(2,5,8,9));
+			
+			
+			/*determinando casillas disponibles desde cada "vértice" */
+			Vmap = new HashMap();
+			Vmap.put(1 ,new Array(9,8));
+			Vmap.put(2 ,new Array(7,8));
+			Vmap.put(3 ,new Array(7,10));
+			Vmap.put(4 ,new Array(10,6));
+			Vmap.put(5 ,new Array(6,9));
+			Vmap.put(6 ,new Array(4,5));
+			Vmap.put(7 ,new Array(3,2));
+			Vmap.put(8 ,new Array(1,2));
+			Vmap.put(9 ,new Array(5,1));
+			Vmap.put(10 ,new Array(3,4));
 			
 			/* Colocando los cuervos */
  			for(var i:int = 0; i < 7; i++)
