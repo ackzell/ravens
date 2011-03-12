@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
+			   initialize="init()" viewSourceURL="srcview/index.html">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import entities.*;
+					
+			public var board:Board = new Board();
+			
+			public function init():void
+			{
+				boardCanvas.addChild(board);
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<mx:Canvas  width="800" height="600" id="boardCanvas">
+		
+	</mx:Canvas>
+	
+</s:Application>
