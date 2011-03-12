@@ -7,7 +7,7 @@ package entities
 	
 	public class Vulture extends Sprite
 	{
-		public var targetNumber:int;
+		public var currentTarget:int;
 		
 		public function Vulture()
 		{
@@ -47,10 +47,10 @@ package entities
 				//trace("ip");
 				this.x = this.dropTarget.parent.x;
 				this.y = this.dropTarget.parent.y;
-				this.targetNumber = Target(this.dropTarget.parent).getNumber();
+				this.currentTarget = Target(this.dropTarget.parent).getNumber();
 			//	Target(this.dropTarget.parent).setOccupant("Vulture");
 				//trace(" sobre-> ",Object(this.dropTarget.parent).constructor);
-				trace("Vulture on: ", this.targetNumber);
+				trace("Vulture on: ", this.currentTarget);
 				Board(this.parent).updateBoard();
 			}
 		}
