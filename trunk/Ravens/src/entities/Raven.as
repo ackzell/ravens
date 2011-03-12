@@ -1,5 +1,7 @@
 package entities
 {
+	import com.greensock.*;
+	
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -7,11 +9,28 @@ package entities
 	
 	public class Raven extends Sprite
 	{
-		
+		/**
+		 * El target (la casilla) en la que se encuentra el buitre actualmente.
+		 * */
 		public var currentTarget:int = 0;
+		
+		/**
+		 * Determina si el cuervo se puede mover. (ser arrastrado)
+		 * 
+		 * */
 		public var canMove:Boolean = true;
+		
+		/**
+		 * Arreglo de targets (casillas) a las que se puede mover el arreglo.
+		 * */
 		public var validTargets:Array = new Array();
 		
+		/**
+		 * Constructor de la clase.
+		 * Dibuja el cuervo en el stage.
+		 * Agrega los listeners al objeto para que pueda ser arrastrado.
+		 * 
+		 * */
 		public function Raven()
 		{
 			// creating a new shape instance
@@ -24,68 +43,129 @@ package entities
 			// adding displayobject to the display list
 			addChild( circle ); 
 		
+			//adding some event listeners so we can drag it
 			this.addEventListener(MouseEvent.MOUSE_DOWN, mouseDown);
 			this.addEventListener(MouseEvent.MOUSE_UP, mouseUp);
 			this.addEventListener(MouseEvent.MOUSE_OVER, mouseOver);
 		}
 		
+		/**
+		 * Mientras el mouse está presionado.
+		 * Sólo permite arrastrar, y se trae encima de todos los elementos en el stage. 
+		 * */
 		private function mouseDown(e:MouseEvent):void
 		{
+			//si el cuervo está en posición de moverse
 			if(this.canMove == true)
 			{
+				//se arrastra
 				this.startDrag();
-				
+				//trayendo encima de todo
 				this.parent.setChildIndex(this, this.parent.numChildren -1);
+				
 			}
 			
 			//trace("raven on: ",this.currentTarget);
 			
 		}
 		
+		/**
+		 * Cuando el puntero pasa por encima del cuervo.
+		 * Muestra los lugares a los que se puede mover el cuervo.
+		 * */
 		private function mouseOver(e:MouseEvent):void
 		{
+			//determinando si estamos en la fase de mover
 			if(Board(this.parent).getPhase() == 2)
 			{
+				//actualizando la lista de casillas disponibles y legales
 				this.setValidTargets();
+				//haciendo que se muestren en la parte gráfica
 				Board(this.parent).showTargets(this);
 			}
 		}
 		
+		/**
+		 * 
+		 * */
 		private function mouseUp(e:MouseEvent):void
 		{
-			var lastX:Number = this.x;
-			var lastY:Number = this.y;
-			var lastTarget:int = this.currentTarget;
+			
+			var newX:Number;
+			var newY:Number;
+			
+			var found:Boolean = false;
 			
 			this.stopDrag();
-
+			
+			//estoy sobre un target
 			if(Object(this.dropTarget.parent).constructor == "[class Target]")
 			{
-				this.currentTarget = Target(this.dropTarget.parent).getNumber();
-				//trace("soltando en un target... nuevo target: ", this.currentTarget);
-			//	trace("movimiento legal, me acomodo en nuevo target...");
-				//trace("ip");
-				this.x = this.dropTarget.parent.x;
-				this.y = this.dropTarget.parent.y;
-				
-				//trace("raven on: ",this.currentTarget);
-				//	Target(this.dropTarget.parent).setOccupant("Raven");
-				//trace(" sobre-> ",Object(this.dropTarget.parent).constructor);
-				//trace("raven on: ", this.currentTarget);
-			
-				Board(this.parent).updateBoard();
-				
-				if(Board(this.parent).getPhase() == 2)
-					validateMove(lastTarget, lastX, lastY);
-				
+				//Estoy en fase 2	
+				if((Board(this.parent).getPhase() == 2))
+				{
+					Board(this.parent).updateBoard();
+					this.setValidTargets();
+					
+					//recorriendo los targets válidos del cuervo actual	
+					for(var u:int = 0; u < this.validTargets.length; u++)
+					{
+						//si lo encuentra en válido
+						if(Target(this.dropTarget.parent).getNumber() == validTargets[u])
+						{
+							trace("target numero: ", Target(this.dropTarget.parent).getNumber(), "valid targets[",u,"]",validTargets[u]);
+							trace("FASE 2 \ntarget encontrado en válidos.... soltando...");
+							//lo acomoda y actualiza el target que tiene el cuervo
+							this.currentTarget = Target(this.dropTarget.parent).getNumber();
+							this.x = this.dropTarget.parent.x;
+							this.y = this.dropTarget.parent.y;
+							found = true;		
+							break;
+						}
+						
+						
+					}
+					//si nunca lo encontró
+					if(found == false)
+					{
+						//regresa al target de donde vino
+						trace("FASE 2 \ntarget NO encontrado ... regresa...");
+						newX = Target(Board(this.parent).targetArr[this.currentTarget - 1]).x;
+						newY = Target(Board(this.parent).targetArr[this.currentTarget - 1]).y;
+						
+						TweenLite.to(this, 0.5, {x: newX, y: newY});
+					}
+				}
+				else//estoy en fase 1
+				{
+					
+					trace("FASE 1 \nsólo acomodo... soltando...");
+					this.currentTarget = Target(this.dropTarget.parent).getNumber();
+					this.x = this.dropTarget.parent.x;
+					this.y = this.dropTarget.parent.y;
+				}
+		
 			}//estoy sobre un target
+			else //NO estoy sobre un target
+			{
+				//estoy en fase 2, regreso a la posición de donde vengo
+				if((Board(this.parent).getPhase() == 2))
+				{
+					newX = Target(Board(this.parent).targetArr[this.currentTarget - 1]).x;
+					newY = Target(Board(this.parent).targetArr[this.currentTarget - 1]).y;
+					
+					TweenLite.to(this, 0.5, {x: newX, y: newY});
+				}
+			}
+			
+			
+			
 		}//function mouseUp
 	
-		private function validateMove(lastTarget:int, lastX:Number, lastY:Number):void
-		{
-			this.setValidTargets();
-		}
 		
+		/**
+		 * le guarda al raven los targets que puede llegar
+		 * */
 		public function setValidTargets():void
 		{
 			this.validTargets = [];
@@ -99,7 +179,20 @@ package entities
 					this.validTargets.push(availableTargets[i]);					
 				}
 			}
-			trace("valid targets: ",this.validTargets);
+			//trace("valid targets: ",this.validTargets);
+		}
+		
+		
+		public function moveToTarget(target:int):void
+		{
+			var newX:Number;
+			var newY:Number;
+			
+			newX = Board(this.parent).targetArr[target].x;
+			newY = Board(this.parent).targetArr[target].y;
+			
+			TweenLite.to(this, 0.5, {x: newX, y: newY});
+			
 		}
 		
 	}//class Raven

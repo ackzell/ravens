@@ -1,14 +1,10 @@
 package entities
 {
 	import collections.HashMap;
-	
 	import com.greensock.*;
-	
 	import flash.display.Shape;
-	
 	import mx.core.UIComponent;
 	import mx.graphics.RadialGradient;
-	
 	
 	public class Board extends UIComponent
 	{
@@ -161,6 +157,7 @@ package entities
 				ravensArr[i].x = i;
 				addChild(ravensArr[i]);
 				
+				
 			}
 			
 			/* colocando al buitre */
@@ -168,6 +165,8 @@ package entities
 			addChild(vulture);
 			
 			this.updateBoard();
+			
+			ravensArr[1].moveToTarget(10);
 
 		}
 		
@@ -195,8 +194,9 @@ package entities
 			//la primer posición del arreglo no se utiliza
 			board[0] = 99;
 			
-			for(i = 0; i <= 10; i++)
+		/*	for(i = 0; i <= 10; i++)
 				trace("board[",i,"]: ",board[i]);
+		*/	
 				//trace("map goes like this --> ", map.getValue(j).sort(Array.NUMERIC));
 			//}
 		}
@@ -210,44 +210,6 @@ package entities
 			return 2;
 		}
 		
-		/*
-			
-		
-		public function showTargets(raven:Raven):void
-		{
-		
-			this.updateBoard();
-			
-			var availableTargets:Array = map.getValue(raven.currentTarget);
-			
-			raven.canMove = false;
-			
-			var timeline:TimelineMax = new TimelineMax();
-			
-			for(var i:int = 0; i < availableTargets.length; i++)
-			{
-				//	trace("i: ",i);
-				//trace("valor i",availableTargets[i]);
-				if(board[availableTargets[i]] == 0)
-				{
-					//trace("availableTargets[i]", availableTargets[i]);
-					//trace("board[availableTargets[i]] ->",board[availableTargets[i]]);
-					//targetArr[availableTargets[i]-1].setColor(0x00ff00);
-					raven.canMove = true;
-					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:1, blurX:15, blurY:15}}));
-					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{delay: 0.5,  glowFilter:{color:0xff0000, alpha:0, blurX:0, blurY:0}}));
-				}
-					
-					
-			}
-			
-			
-			//timeline.reverse();
-			//trace("available-> ", map.getValue(raven.currentTarget));
-			//trace(Object(map.getValue(raven.currentTarget).constructor));
-			//trace(map.getValue(raven.currentTarget).length);
-		}
-		*/
 		
 		public function showTargets(raven:Raven):void
 		{
