@@ -1,6 +1,7 @@
 package entities
 {
 	import com.greensock.*;
+	
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -17,6 +18,7 @@ package entities
 		public var canMove:Boolean = true;
 		
 		
+		public var victims:Array = new Array();
 		/**
 		 * Arreglo de targets (casillas) a las que se puede mover el arreglo.
 		 * */
@@ -57,7 +59,7 @@ package entities
 				if(Board(this.parent).getPhase() == 2)
 				{
 					//actualizando la lista de casillas disponibles y legales
-					this.setValidTargets();
+					this.setVictims();
 					//haciendo que se muestren en la parte gráfica
 					Board(this.parent).showTargets(this);
 				}
@@ -115,8 +117,8 @@ package entities
 		}
 		
 		/**
-		 * Actualiza las casillas disponibles para el cuervo
-		 * */
+		 * Actualiza las casillas disponibles para el buitre
+		 * 
 		public function setValidTargets():void
 		{
 			this.validTargets = [];
@@ -131,6 +133,22 @@ package entities
 				}
 			}
 			//trace("valid targets: ",this.validTargets);
+		}
+		*/
+		public function setVictims():void
+		{
+			//reseteando el arreglo de posibles víctimas
+			this.victims = [];
+			
+			var adjacencies:Array = new Array();
+			adjacencies = Board(this.parent).map.getValue(this.currentTarget);
+			
+			for(var i:int = 0; i < adjacencies.length; i++)
+			{
+				if (Board(this.parent).ravensArr[Board(this.parent).Vmap.getValue(new Array (this.currentTarget, adjacencies[i]))].currentTarget == 0)
+					victims.push(adjacencies[i]);
+			}
+			
 		}
 		
 		public function eatRaven():void
