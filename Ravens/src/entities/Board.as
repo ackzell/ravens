@@ -9,6 +9,8 @@ package entities
 	import mx.core.UIComponent;
 	import mx.graphics.RadialGradient;
 	
+	import mx.controls.Alert;
+	
 	public class Board extends UIComponent
 	{
 		/**
@@ -55,6 +57,13 @@ package entities
 		 * */
 		public var targetArr:Array = new Array();
 		
+		
+		/**
+		 * 1 para cuervos
+		 * 0 para buitre
+		 * */
+		public var turno:int;
+		
 		/**
 		 * Constructor de la clase.
 		 * Coloca los "targets" en su posición en la interfaz gráfica.
@@ -68,6 +77,9 @@ package entities
 		{
 			/* fase de colocación de objetos*/
 			phase = 1;
+			
+			/*empiezan cuervos */
+			turno = 1;
 			
 			/* creando la estrella */
 			var star:Shape = new Shape();
@@ -174,15 +186,19 @@ package entities
  			for(var i:int = 0; i < 7; i++)
 			{
 				ravensArr[i] = new Raven();
-				ravensArr[i].x = i;
+				ravensArr[i].x = 700;
+				ravensArr[i].y = 300;
+				
 				addChild(ravensArr[i]);
 				
 				
 			}
 			
 			/* colocando al buitre */
-			vulture.x = 500;
+			vulture.x = 100;
+			vulture.y = 300; 
 			addChild(vulture);
+			
 			
 			this.updateBoard();
 			
@@ -231,18 +247,29 @@ package entities
 		}
 		
 		
-		public function showTargets(raven:Raven):void
+		public function showTargets(bird:Object):void
 		{
-			var availableTargets:Array  = raven.validTargets; 
+			var availableTargets:Array  = bird.validTargets; 
 			
-			raven.canMove = false;
+			bird.canMove = false;
 			
 			var timeline:TimelineMax = new TimelineMax();
 			for(var i:int = 0; i < availableTargets.length; i++)
 			{
-					raven.canMove = true;
+					bird.canMove = true;
 					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:1, blurX:15, blurY:15}}));
 					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{delay: 0.5,  glowFilter:{color:0xff0000, alpha:0, blurX:0, blurY:0}}));
+			}
+		}
+		
+		public function checkState():void
+		{
+			if (this.getPhase() == 2)
+			{
+				this.vulture.setValidTargets();
+				//if((this.vulture.validTargets.length == 0) && (this.vulture.validFood.length == 0))
+				if((this.vulture.validTargets.length == 0))
+					Alert.show("buitre pierde");
 			}
 		}
 	}

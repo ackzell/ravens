@@ -55,14 +55,18 @@ package entities
 		 * */
 		private function mouseDown(e:MouseEvent):void
 		{
+			
 			//si el cuervo está en posición de moverse
 			if(this.canMove == true)
 			{
-				//se arrastra
-				this.startDrag();
-				//trayendo encima de todo
-				this.parent.setChildIndex(this, this.parent.numChildren -1);
-				
+				if(Board(this.parent).turno == 1)
+				{
+					//se arrastra
+					this.startDrag();
+					//trayendo encima de todo
+					this.parent.setChildIndex(this, this.parent.numChildren -1);
+					//cambiando el turno para que le toque al buitre
+				}
 			}
 			
 			//trace("raven on: ",this.currentTarget);
@@ -75,6 +79,7 @@ package entities
 		 * */
 		private function mouseOver(e:MouseEvent):void
 		{
+			if(Board(this.parent).turno == 1)
 			//determinando si estamos en la fase de mover
 			if(Board(this.parent).getPhase() == 2)
 			{
@@ -113,13 +118,16 @@ package entities
 						//si lo encuentra en válido
 						if(Target(this.dropTarget.parent).getNumber() == validTargets[u])
 						{
-							trace("target numero: ", Target(this.dropTarget.parent).getNumber(), "valid targets[",u,"]",validTargets[u]);
-							trace("FASE 2 \ntarget encontrado en válidos.... soltando...");
+							//trace("target numero: ", Target(this.dropTarget.parent).getNumber(), "valid targets[",u,"]",validTargets[u]);
+							//trace("FASE 2 \ntarget encontrado en válidos.... soltando...");
 							//lo acomoda y actualiza el target que tiene el cuervo
 							this.currentTarget = Target(this.dropTarget.parent).getNumber();
 							this.x = this.dropTarget.parent.x;
 							this.y = this.dropTarget.parent.y;
 							found = true;		
+							Board(this.parent).turno--;
+							trace(Board(this.parent).turno);
+							
 							break;
 						}
 						
@@ -129,7 +137,7 @@ package entities
 					if(found == false)
 					{
 						//regresa al target de donde vino
-						trace("FASE 2 \ntarget NO encontrado ... regresa...");
+						//trace("FASE 2 \ntarget NO encontrado ... regresa...");
 						newX = Target(Board(this.parent).targetArr[this.currentTarget - 1]).x;
 						newY = Target(Board(this.parent).targetArr[this.currentTarget - 1]).y;
 						
@@ -139,10 +147,13 @@ package entities
 				else//estoy en fase 1
 				{
 					
-					trace("FASE 1 \nsólo acomodo... soltando...");
+				//	trace("FASE 1 \nsólo acomodo... soltando...");
 					this.currentTarget = Target(this.dropTarget.parent).getNumber();
 					this.x = this.dropTarget.parent.x;
 					this.y = this.dropTarget.parent.y;
+					
+					Board(this.parent).turno--;
+					trace(Board(this.parent).turno);
 				}
 		
 			}//estoy sobre un target
@@ -158,7 +169,7 @@ package entities
 				}
 			}
 			
-			
+			Board(this.parent).checkState();
 			
 		}//function mouseUp
 	
