@@ -86,7 +86,7 @@ package entities
 		}
 		
 		/**
-		 * 
+		 * Cuando el mouse se libera.
 		 * */
 		private function mouseUp(e:MouseEvent):void
 		{
@@ -182,14 +182,18 @@ package entities
 			//trace("valid targets: ",this.validTargets);
 		}
 		
-		
+		/**
+		 * mueve el cuervo a un target deseado.
+		 * @param target la casilla donde se quiere colocar el cuervo
+		 * 
+		 * */
 		public function moveToTarget(target:int):void
 		{
 			var newX:Number;
 			var newY:Number;
 			
-			newX = Board(this.parent).targetArr[target].x;
-			newY = Board(this.parent).targetArr[target].y;
+			newX = Target(Board(this.parent).targetArr[target-1]).x;
+			newY = Target(Board(this.parent).targetArr[target-1]).y;
 			
 			TweenLite.to(this, 0.5, {x: newX, y: newY});
 			
