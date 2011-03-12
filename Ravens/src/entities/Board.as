@@ -6,10 +6,9 @@ package entities
 	
 	import flash.display.Shape;
 	
+	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	import mx.graphics.RadialGradient;
-	
-	import mx.controls.Alert;
 	
 	public class Board extends UIComponent
 	{
@@ -93,7 +92,7 @@ package entities
 			star.graphics.lineTo(237.291, 547.688);
 			star.graphics.lineTo(400, 52.312);
 			
-			trace("poniendo targets");
+			//trace("poniendo targets");
 			/* colocando los "targets" */
 			var t1:Target = new Target(1);
 			t1.x = 400;
@@ -168,8 +167,8 @@ package entities
 			map.put(9, new Array(10,4,2,7));
 			map.put(10, new Array(2,5,8,9));
 			
-			
-			/*determinando casillas disponibles desde cada "vértice" */
+			/*
+			/*determinando casillas disponibles desde cada "vértice" 
 			Vmap = new HashMap();
 			Vmap.put(1 ,new Array(9,8));
 			Vmap.put(2 ,new Array(7,8));
@@ -181,6 +180,34 @@ package entities
 			Vmap.put(8 ,new Array(1,2));
 			Vmap.put(9 ,new Array(5,1));
 			Vmap.put(10 ,new Array(3,4));
+
+			*/
+			
+			// comida del buitre
+			//par ([A, B], C) (de A a C se come a B)
+			Vmap = new HashMap();
+			Vmap.put([1,7], 9);
+			Vmap.put([1,6], 8);
+			Vmap.put([2,9], 7);
+			Vmap.put([2,10],8);
+			Vmap.put([3,6], 7);
+			Vmap.put([3,8],10);
+			Vmap.put([4,7], 6);
+			Vmap.put([4,9],10);
+			Vmap.put([5,8], 6);
+			Vmap.put([5,10],9);
+			Vmap.put([6,7], 4);
+			Vmap.put([6,8], 5);
+			Vmap.put([7,6], 3);
+			Vmap.put([7,9], 2);
+			Vmap.put([8,6], 1);
+			Vmap.put([8,10],2);
+			Vmap.put([9,7], 1);
+			Vmap.put([9,10],5);
+			Vmap.put([10,9],4);
+			Vmap.put([10,8],3);
+			
+			
 			
 			/* Colocando los cuervos */
  			for(var i:int = 0; i < 7; i++)
@@ -262,12 +289,17 @@ package entities
 			}
 		}
 		
+		public function showVictims():void
+		{
+			trace(Vmap.getValue(this.vulture.currentTarget));
+		}
+		
 		public function checkState():void
 		{
 			if (this.getPhase() == 2)
 			{
-				this.vulture.setValidTargets();
-				//if((this.vulture.validTargets.length == 0) && (this.vulture.validFood.length == 0))
+				this.vulture.setVictims();
+				//if((this.vulture.validTargets.length == 0) && (this.vulture.victims.length == 0))
 				if((this.vulture.validTargets.length == 0))
 					Alert.show("buitre pierde");
 			}

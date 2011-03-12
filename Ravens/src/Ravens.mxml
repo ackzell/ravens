@@ -2,7 +2,7 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
-			   initialize="init()" viewSourceURL="srcview/index.html">
+			   initialize="init()" viewSourceURL="srcview/index.html" preloaderChromeColor="#0096FF" pageTitle="Kaooa!">
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -21,7 +21,7 @@
 	</fx:Script>
 	
 	
-	<mx:Canvas  width="800" height="600" id="boardCanvas" backgroundColor="#DCE9FF">
+	<mx:Canvas  width="800" height="600" id="boardCanvas" backgroundColor="#FFFFFF">
 		
 	</mx:Canvas>
 	
