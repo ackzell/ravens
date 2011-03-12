@@ -2,10 +2,13 @@ package entities
 {
 	import collections.HashMap;
 	
+	import com.greensock.*;
+	
 	import flash.display.Shape;
 	
 	import mx.core.UIComponent;
 	import mx.graphics.RadialGradient;
+	
 	
 	public class Board extends UIComponent
 	{
@@ -17,7 +20,7 @@ package entities
 		 * 1 si hay un cuervo.
 		 * 2 para el buitre.
 		 */
-		public var board:Array;
+		public var board:Array = new Array();
 		/**
 		 * Contiene las posiciones adyacentes en el tablero.
 		 * Para la posición 1, se tiene el par (1, [6, 7]) dado que desde la posición 1 podría haber movimiento hacia la posición 6 o la 7.
@@ -155,7 +158,7 @@ package entities
  			for(var i:int = 0; i < 7; i++)
 			{
 				ravensArr[i] = new Raven();
-				ravensArr[i].x = i + 60;
+				ravensArr[i].x = i;
 				addChild(ravensArr[i]);
 				
 			}
@@ -164,14 +167,8 @@ package entities
 			vulture.x = 500;
 			addChild(vulture);
 			
-			/* inicializando el arreglo lógico del tablero */
-			board = new Array();
-			for(i = 1; i <= 10; i++)
-			{
-				board[i] = 0;
-			}
-			
-			
+			this.updateBoard();
+
 		}
 		
 		/**
@@ -181,59 +178,90 @@ package entities
 		 * */
 		public function updateBoard():void
 		{
-			/*recorriendo el arreglo de posiciones */
-			for(var j:int = 1; j <= 10; j++)
+			/* inicializando el arreglo lógico del tablero */
+			for(i = 0; i <= 10; i++)
 			{
-				/* recorriendo el arreglo de cuervos */
-				for(var i:int = 0; i < 7; i++)
-				{
-					//cuervo
-					if(ravensArr[i].targetNumber == j)
-						board[j] = 1;
-					//buitre
-					else if(vulture.targetNumber == j)
-						board[j] = 2;
-					//vacío
-					else
-						board[j] = 0;
-						
-				}
-				trace("board[",j,"] : ",board[j]);
-				//trace("map goes like this --> ", map.getValue(j).sort(Array.NUMERIC));
+				board[i] = 0;
 			}
+			//colocando un 1 en el arreglo si es que hay un cuervo
+			for(var i:int = 0; i < 7; i++)
+			{
+				board[ravensArr[i].currentTarget] = 1;
+				
+			}
+			//colocando un 2 en el arreglo donde está el buitre	
+			board[vulture.currentTarget] = 2;
+			
+			//la primer posición del arreglo no se utiliza
+			board[0] = 99;
+			
+			for(i = 0; i <= 10; i++)
+				trace("board[",i,"]: ",board[i]);
+				//trace("map goes like this --> ", map.getValue(j).sort(Array.NUMERIC));
+			//}
 		}
 		
 		public function getPhase():int
 		{
+		
 			for(var x:int = 0; x < 7; x++)
-				if(ravensArr[x].targetNumber == 0)
+				if(ravensArr[x].currentTarget == 0)
 					return 1;
 			return 2;
 		}
 		
+		/*
+			
+		
 		public function showTargets(raven:Raven):void
 		{
-			//this.updateBoard();
-			trace(board);
-			var availableTargets:Array = map.getValue(raven.targetNumber);
-			//for(var j:int = 1; j <= 10; j++)
-			trace(availableTargets);
-				for(var i:int = 0; i < availableTargets.length; i++)
-				{
-					trace("i: ",i);
-					//trace("valor i",availableTargets[i]);
-					if(board[availableTargets[i]] == 0)
-					{
-						trace("availableTargets[i]", availableTargets[i]);
-						trace("board[availableTargets[i]] ->",board[availableTargets[i]]);
-						targetArr[availableTargets[i]-1].setColor(0x00ff00);
-					}
-						
-				}
-			//trace("available-> ", map.getValue(raven.targetNumber));
-			//trace(Object(map.getValue(raven.targetNumber).constructor));
-			//trace(map.getValue(raven.targetNumber).length);
-		}
 		
+			this.updateBoard();
+			
+			var availableTargets:Array = map.getValue(raven.currentTarget);
+			
+			raven.canMove = false;
+			
+			var timeline:TimelineMax = new TimelineMax();
+			
+			for(var i:int = 0; i < availableTargets.length; i++)
+			{
+				//	trace("i: ",i);
+				//trace("valor i",availableTargets[i]);
+				if(board[availableTargets[i]] == 0)
+				{
+					//trace("availableTargets[i]", availableTargets[i]);
+					//trace("board[availableTargets[i]] ->",board[availableTargets[i]]);
+					//targetArr[availableTargets[i]-1].setColor(0x00ff00);
+					raven.canMove = true;
+					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:1, blurX:15, blurY:15}}));
+					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{delay: 0.5,  glowFilter:{color:0xff0000, alpha:0, blurX:0, blurY:0}}));
+				}
+					
+					
+			}
+			
+			
+			//timeline.reverse();
+			//trace("available-> ", map.getValue(raven.currentTarget));
+			//trace(Object(map.getValue(raven.currentTarget).constructor));
+			//trace(map.getValue(raven.currentTarget).length);
+		}
+		*/
+		
+		public function showTargets(raven:Raven):void
+		{
+			var availableTargets:Array  = raven.validTargets; 
+			
+			raven.canMove = false;
+			
+			var timeline:TimelineMax = new TimelineMax();
+			for(var i:int = 0; i < availableTargets.length; i++)
+			{
+					raven.canMove = true;
+					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:1, blurX:15, blurY:15}}));
+					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{delay: 0.5,  glowFilter:{color:0xff0000, alpha:0, blurX:0, blurY:0}}));
+			}
+		}
 	}
 }
