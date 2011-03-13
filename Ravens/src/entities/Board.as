@@ -169,8 +169,8 @@ package entities
 			map.put(9, new Array(10,4,2,7));
 			map.put(10, new Array(2,5,8,9));
 			
-			
-			/*determinando casillas disponibles desde cada target(casilla) */
+			/*
+			/*determinando casillas disponibles desde cada target(casilla) 
 			Vmap = new HashMap();
 			Vmap.put(1 ,new Array(9,8));
 			Vmap.put(2 ,new Array(7,8));
@@ -183,33 +183,21 @@ package entities
 			Vmap.put(9 ,new Array(5,1));
 			Vmap.put(10 ,new Array(3,4));
 
+			*/
 			
-			/*
 			// comida del buitre
 			//par ([A, B], C) (de A a C se come a B)
 			Vmap = new HashMap();
-			Vmap.put([1,7], 9);
-			Vmap.put([1,6], 8);
-			Vmap.put([2,9], 7);
-			Vmap.put([2,10],8);
-			Vmap.put([3,6], 7);
-			Vmap.put([3,8],10);
-			Vmap.put([4,7], 6);
-			Vmap.put([4,9],10);
-			Vmap.put([5,8], 6);
-			Vmap.put([5,10],9);
-			Vmap.put([6,7], 4);
-			Vmap.put([6,8], 5);
-			Vmap.put([7,6], 3);
-			Vmap.put([7,9], 2);
-			Vmap.put([8,6], 1);
-			Vmap.put([8,10],2);
-			Vmap.put([9,7], 1);
-			Vmap.put([9,10],5);
-			Vmap.put([10,9],4);
-			Vmap.put([10,8],3);
-			*/
-			
+			Vmap.put(1,[[7,9],[6,8]]);
+			Vmap.put(2,[[9,7],[10,8]]);
+			Vmap.put(3,[[6,7],[8,10]]);
+			Vmap.put(4,[[7,6],[9,10]]);
+			Vmap.put(5,[[8,6],[10,9]]);
+			Vmap.put(6,[[7,4],[8,5]]);		
+			Vmap.put(7,[[6,3],[9,2]]);
+			Vmap.put(8,[[6,1],[10,2]]);
+			Vmap.put(9,[[7,1],[9,10]]);
+			Vmap.put(10,[[9,4],[8,3]]);
 			
 			/* Colocando los cuervos */
  			for(var i:int = 0; i < 7; i++)
@@ -228,12 +216,9 @@ package entities
 			vulture.y = 300; 
 			addChild(vulture);
 			
-			
-			
-			
 			this.updateBoard();			
 			
-			PCvsPC();
+			//PCvsPC();
 			
 			//inteligencia = new Ai();
 			//ravensArr[1].moveToTarget(10);
@@ -285,7 +270,7 @@ package entities
 		{
 			var availableTargets:Array  = bird.validTargets; 
 			
-			bird.canMove = false;
+			//bird.canMove = false;
 			
 			var timeline:TimelineMax = new TimelineMax();
 			for(var i:int = 0; i < availableTargets.length; i++)
@@ -298,7 +283,18 @@ package entities
 		
 		public function showVictims():void
 		{
-			trace(Vmap.getValue(this.vulture.currentTarget));
+			this.vulture.setVictims();
+			showTargets(this.vulture);
+			
+			var timeline:TimelineMax = new TimelineMax();
+			for(var i:int = 0; i < this.vulture.victims.length; i++)
+			{
+				//bird.canMove = true;
+				timeline.insert(new TweenMax(targetArr[this.vulture.victims[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:1, blurX:15, blurY:15}}));
+				timeline.insert(new TweenMax(targetArr[this.vulture.victims[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:0, blurX:15, blurY:15}}));
+				
+			}
+			
 		}
 		
 		public function checkState():void
