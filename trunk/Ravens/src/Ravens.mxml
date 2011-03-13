@@ -10,7 +10,7 @@
 	<fx:Script>
 		<![CDATA[
 			
-			//cambio
+			//cambio dos
 			import entities.*;
 					
 			public var board:Board = new Board();
