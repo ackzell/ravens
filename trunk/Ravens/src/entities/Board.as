@@ -10,6 +10,8 @@ package entities
 	import mx.core.UIComponent;
 	import mx.graphics.RadialGradient;
 	
+	import flash.filters.*;
+	
 	public class Board extends UIComponent
 	{
 		/**
@@ -86,13 +88,28 @@ package entities
 			var star:Shape = new Shape();
 			addChild(star);
 			
-			star.graphics.lineStyle(4, 0x008080);
+			
+			star.graphics.lineStyle(10, 0x666666);
 			star.graphics.moveTo(400, 52.312);
 			star.graphics.lineTo(558.485, 547.688);
 			star.graphics.lineTo(140.149, 239.308);
 			star.graphics.lineTo(659.851, 239.308);
 			star.graphics.lineTo(237.291, 547.688);
 			star.graphics.lineTo(400, 52.312);
+			
+			var bevel:BevelFilter = new BevelFilter();
+			bevel.blurX = 20;
+			bevel.blurY = 20;
+			bevel.quality = 1;
+			bevel.angle = 30;
+			bevel.distance = 30;
+			bevel.shadowAlpha = 1;
+			bevel.highlightAlpha = 1;
+			bevel.strength = 1; //normal range 0 to 1, could go higher
+			
+			var filtersArray:Array = new Array(bevel);
+			star.filters = filtersArray;
+
 			
 			//trace("poniendo targets");
 			/* colocando los "targets" */
@@ -268,6 +285,7 @@ package entities
 		
 		public function showTargets(bird:Object):void
 		{
+			bird.setValidTargets();
 			var availableTargets:Array  = bird.validTargets; 
 			
 			//bird.canMove = false;
@@ -276,24 +294,43 @@ package entities
 			for(var i:int = 0; i < availableTargets.length; i++)
 			{
 					bird.canMove = true;
-					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:1, blurX:15, blurY:15}}));
-					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{delay: 0.5,  glowFilter:{color:0xff0000, alpha:0, blurX:0, blurY:0}}));
+					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{tint: 0x66ff00, glowFilter:{color:0x66ff00, alpha:1, blurX:3, blurY:3}}));
+					timeline.insert(new TweenMax(targetArr[availableTargets[i]-1], 0.5 ,{tint: 0x666666, delay: 0.5,  glowFilter:{color:0x66ff00, alpha:0, blurX:0, blurY:0}}));
 			}
 		}
 		
-		public function showVictims():void
+		public function showVictims(vulture:Vulture):void
 		{
-			this.vulture.setVictims();
-			showTargets(this.vulture);
+			trace("victims->",vulture.victims);
+			vulture.setVictims();
+			trace("targets->",vulture.validTargets);
+			
 			
 			var timeline:TimelineMax = new TimelineMax();
-			for(var i:int = 0; i < this.vulture.victims.length; i++)
-			{
-				//bird.canMove = true;
-				timeline.insert(new TweenMax(targetArr[this.vulture.victims[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:1, blurX:15, blurY:15}}));
-				timeline.insert(new TweenMax(targetArr[this.vulture.victims[i]-1], 0.5 ,{glowFilter:{color:0xff0000, alpha:0, blurX:15, blurY:15}}));
+			
+			if(vulture.victims.length > 0)
+			{	
+				for(var i:int = 0; i < vulture.victims.length; i++)
+				{
+					
+					timeline.insert(new TweenMax(targetArr[vulture.victims[i]-1], 0.5 ,{glowFilter:{color:0xffffff, alpha:1, blurX:15, blurY:15}}));
+					timeline.insert(new TweenMax(targetArr[vulture.victims[i]-1], 0.5 ,{delay: 0.5, glowFilter:{color:0xffffff, alpha:0, blurX:0, blurY:0}}));
+					
+				}
 				
 			}
+			if(vulture.validTargets.length > 0)
+			{
+				for(var j:int = 0; j < vulture.validTargets.length; j++)
+				{
+					
+					timeline.insert(new TweenMax(targetArr[vulture.validTargets[j]-1], 0.5 ,{tint: 0x66ff00, glowFilter:{color:0x66ff00, alpha:1, blurX:3, blurY:3}}));
+					timeline.insert(new TweenMax(targetArr[vulture.validTargets[j]-1], 0.5 ,{tint: 0x666666, delay: 0.5, glowFilter:{color:0x66ff00, alpha:0, blurX:0, blurY:0}}));
+					
+				}
+			}
+			
+			
 			
 		}
 		
