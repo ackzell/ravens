@@ -207,6 +207,7 @@ package entities
 			newY = Target(Board(this.parent).targetArr[target-1]).y;
 			
 			TweenLite.to(this, 0.5, {x: newX, y: newY});
+			this.currentTarget = target;
 			
 		}
 		

@@ -5,7 +5,7 @@ package entities
 	 * ...
 	 * @author ...
 	 */
-	public class  AI
+	public class  Ai
 	{
 		var tablero:Array;
 		var turno:int;
@@ -27,35 +27,26 @@ package entities
 		
 		public function cuervo()
 		{
-			if (turno <= 8)
-			{
-				for (var x:int = 1; x <= 5 ; x++ )
-				{
-					if (tablero[x] == 0)
-						break;
-				}
-				tablero[x] = 1;
-			}
-			else
-			{
-				busqueda(0,0,tablero,0);
-			}
+			busqueda(0,0,tablero,0);
 			turno++;
 		}
 		
 		public function buitre()
 		{
+			var res:Array;
 			if (turno == 1)
 				tablero[Math.floor(Math.random() * (10)) + 1] = 2;
 			else
-				busqueda(0, 1, tablero, 1);
+				res = busqueda(0, 1, tablero, 1);
 			turno++;
+			return res[0];
 		}
 		
 		public function busqueda(nivel:int, jugador:int, estado:Array, tipo:int)
 		{
+			var dest:Array;
+			dest = new Array();
 			var valor:int;
-			var des:int;
 			if(nivel%2 == 0	)
 				valor = min;
 			else
@@ -112,7 +103,7 @@ package entities
 							if (tmp < valor)
 							{
 								valor = tmp;
-								des = caminos[y];
+								dest[0] = caminos[y];
 							}
 						}
 						else
@@ -120,7 +111,7 @@ package entities
 							if (tmp > valor)
 							{
 								valor = tmp;
-								des = caminos[y];
+								dest[0] = caminos[y];
 							}
 						}
 					}
@@ -150,7 +141,8 @@ package entities
 									if (tmp < valor)
 									{
 										valor = tmp;
-										des = caminos[y];
+										dest[0] = caminos[y];
+										dest[1] = x;
 									}
 								}
 								else
@@ -158,7 +150,8 @@ package entities
 									if (tmp > valor)
 									{
 										valor = tmp;
-										des = caminos[y];
+										dest[0] = caminos[y];
+										dest[1] = x;
 									}
 								}
 							}
@@ -167,37 +160,37 @@ package entities
 					}
 				}
 			}
+			if(nivel > 0)
+				return valor;
+			else
+				return dest;
 		}
-		if(nivel > 0)
-			return valor;
-		else
-			return dest;
-	}
 	
-	public function evaluacion(estado:Array)
-	{
-		var k:int = 0;
-		var n:int = 0;
-		for (x = 1; x <= 10; x++ )
+		public function evaluacion(estado:Array):int
 		{
-			if (estado[x] == 2)
+			var k:int = 0;
+			var n:int = 0;
+			for (x = 1; x <= 10; x++ )
 			{
-				caminos:Array = mapa.getValues(x);
-				var y:int;
-				for (y = 0; y < caminos.lenght; x++ )
+				if (estado[x] == 2)
 				{
-					if (estado[caminos[y]] == 0)
-						k++;
+					caminos:Array = mapa.getValues(x);
+					var y:int;
+					for (y = 0; y < caminos.lenght; x++ )
+					{
+						if (estado[caminos[y]] == 0)
+							k++;
+					}
 				}
 			}
-		}
-		for (x = 1; x <= 10; x++ )
-		{
-			if (estado[x] == 1)
+			for (x = 1; x <= 10; x++ )
 			{
-				n++;
-			}
+				if (estado[x] == 1)
+				{
+					n++;
+				}
+			}		
+			return n - k;	
 		}
 	}
-	return n - k;	
 }
