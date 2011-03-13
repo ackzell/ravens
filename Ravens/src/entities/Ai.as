@@ -23,14 +23,14 @@ package entities
 			tablero = board;
 			turno = 0;
 			max = 8;
-			min = -1;
-			tope = 3;
+			min = -5;
+			tope = 8;
 			map = mapa;
 			this.Cuervos = arreglo;
 			this.Buitre = wey;
 			this.Vmap = vmap;
 		}
-		
+				
 		public function cuervo():Array
 		{
 			var res:Array = new Array();
@@ -49,7 +49,7 @@ package entities
 		public function busqueda(nivel:int, jugador:int, estado:Array, tipo:int):int
 		{
 			var dest:int;
-			dest = -1;
+			dest = -4;
 			var valor:int;
 			if(nivel%2 == 0	)
 				valor = min;
@@ -78,7 +78,7 @@ package entities
 				if(tipo==0)
 					return t;
 				else
-					return 8-t;
+					return 7-t;
 			}
 			var caminos:Array;
 			if (jugador == 1) // Buitre
@@ -210,7 +210,8 @@ package entities
 								{
 									valor = tmp;
 									dest = x;
-									a = 0;
+									if(nivel==0)
+										a = 0;
 								}
 							}
 							else
@@ -219,7 +220,8 @@ package entities
 								{
 									valor = tmp;
 									dest = x;
-									a = 0;
+									if(nivel==0)
+										a = 0;
 								}
 							}
 						}
@@ -250,7 +252,8 @@ package entities
 										{
 											valor = tmp;
 											dest = caminos[y];
-											a = x;
+											if(nivel==0)
+												a = x;
 										}
 									}
 									else
@@ -259,7 +262,8 @@ package entities
 										{
 											valor = tmp;
 											dest = caminos[y];
-											a = x;
+											if(nivel==0)
+												a = x;
 										}
 									}
 								}
@@ -272,7 +276,7 @@ package entities
 				return valor;
 			else
 			{
-				if(dest == -1)
+				if(dest == -4)
 					trace(turno," dest = 0: ",estado);
 				return dest;
 			}
