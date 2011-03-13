@@ -143,13 +143,23 @@ package entities
 			var adjacencies:Array = new Array();
 			adjacencies = Board(this.parent).map.getValue(this.currentTarget);
 			
+			trace(adjacencies);
+			
 			for(var i:int = 0; i < adjacencies.length; i++)
+			{
+				var busca:Array = new Array(this.currentTarget, adjacencies[i]);
+				trace("busca-> ",busca);
+				var hop:int  = Board(this.parent).Vmap.getValue([3,8]);
+				trace("salto-> ",hop);
+			}
+			
+			/*for(var i:int = 0; i < adjacencies.length; i++)
 			{
 				if (Board(this.parent).ravensArr[Board(this.parent).Vmap.getValue(new Array (this.currentTarget, adjacencies[i]))].currentTarget == 0)
 					victims.push(adjacencies[i]);
 			}
-			
-			trace(this.victims);
+			*/
+			//trace(this.victims);
 		}
 		
 		public function eatRaven():void
