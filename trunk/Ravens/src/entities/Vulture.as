@@ -53,17 +53,17 @@ package entities
 		 * */
 		private function mouseOver(e:MouseEvent):void
 		{
-			if(Board(this.parent).turno == 0)
-			{	
+			//if(Board(this.parent).turno == 0)
+			//{	
 				//determinando si estamos en la fase de mover
 				if(Board(this.parent).getPhase() == 2)
 				{
 					//actualizando la lista de casillas disponibles y legales
 					this.setVictims();
 					//haciendo que se muestren en la parte gráfica
-					Board(this.parent).showTargets(this);
+					Board(this.parent).showVictims();
 				}
-			}
+			//}
 		}
 		
 		private function mouseDown(e:MouseEvent):void
@@ -71,13 +71,13 @@ package entities
 			//si el cuervo está en posición de moverse
 			if(this.canMove == true)
 			{
-				if(Board(this.parent).turno == 0)
-				{
+			//	if(Board(this.parent).turno == 0)
+			//	{
 					//se arrastra
 					this.startDrag();
 					//trayendo encima de todo
 					this.parent.setChildIndex(this, this.parent.numChildren -1);
-				}	
+			//	}	
 				
 			}
 			
@@ -137,29 +137,24 @@ package entities
 		*/
 		public function setVictims():void
 		{
+			Board(this.parent).updateBoard();
+			
 			//reseteando el arreglo de posibles víctimas
 			this.victims = [];
 			
-			var adjacencies:Array = new Array();
-			adjacencies = Board(this.parent).map.getValue(this.currentTarget);
+			//var adjacencies:Array = Board(this.parent).map.getValue(this.currentTarget);
+			var hops:Array = Board(this.parent).Vmap.getValue(this.currentTarget);
 			
-			trace(adjacencies);
+			var candidate1:Array = hops[0];
+			var candidate2:Array = hops[1];
 			
-			for(var i:int = 0; i < adjacencies.length; i++)
-			{
-				var busca:Array = new Array(this.currentTarget, adjacencies[i]);
-				trace("busca-> ",busca);
-				var hop:int  = Board(this.parent).Vmap.getValue([3,8]);
-				trace("salto-> ",hop);
-			}
+			if((Board(this.parent).board[candidate1[0]] == 1) && Board(this.parent).board[candidate1[1]] == 0)
+				this.victims.push(candidate1[0]);
 			
-			/*for(var i:int = 0; i < adjacencies.length; i++)
-			{
-				if (Board(this.parent).ravensArr[Board(this.parent).Vmap.getValue(new Array (this.currentTarget, adjacencies[i]))].currentTarget == 0)
-					victims.push(adjacencies[i]);
-			}
-			*/
-			//trace(this.victims);
+			if((Board(this.parent).board[candidate2[0]] == 1) && Board(this.parent).board[candidate2[1]] == 0)
+				this.victims.push(candidate2[0]);
+			
+			trace("puedo comer a--> ",this.victims);
 		}
 		
 		public function eatRaven():void
