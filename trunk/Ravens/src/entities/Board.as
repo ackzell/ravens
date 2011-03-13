@@ -5,12 +5,11 @@ package entities
 	import com.greensock.*;
 	
 	import flash.display.Shape;
+	import flash.filters.*;
 	
 	import mx.controls.Alert;
 	import mx.core.UIComponent;
 	import mx.graphics.RadialGradient;
-	
-	import flash.filters.*;
 	
 	public class Board extends UIComponent
 	{
@@ -65,7 +64,7 @@ package entities
 		 * */
 		public var turno:int;
 		
-		//public var inteligencia:Ai;
+		public var inteligencia:Ai;
 		
 		/**
 		 * Constructor de la clase.
@@ -213,7 +212,7 @@ package entities
 			Vmap.put(6,[[7,4],[8,5]]);		
 			Vmap.put(7,[[6,3],[9,2]]);
 			Vmap.put(8,[[6,1],[10,2]]);
-			Vmap.put(9,[[7,1],[9,10]]);
+			Vmap.put(9,[[7,1],[10,5]]);
 			Vmap.put(10,[[9,4],[8,3]]);
 			
 			/* Colocando los cuervos */
@@ -233,7 +232,11 @@ package entities
 			vulture.y = 300; 
 			addChild(vulture);
 			
-			this.updateBoard();			
+			this.updateBoard();
+			
+			inteligencia = new Ai(board,map, ravensArr, vulture,Vmap);
+			
+			//PCvsPC();
 			
 			//PCvsPC();
 			
@@ -250,7 +253,7 @@ package entities
 		public function updateBoard():void
 		{
 			/* inicializando el arreglo lógico del tablero */
-			for(i = 0; i <= 10; i++)
+			for(i = 1; i <= 10; i++)
 			{
 				board[i] = 0;
 			}
@@ -349,18 +352,78 @@ package entities
 		{
 			while(true)
 			{
+				//Cuervos
+				var res:Array;
 				if(getPhase()==1)//jugada cuervo
 				{
+					trace(inteligencia.turno," poner");
 					var x:int;
 					for (x = 1; x <= 5 ; x++ )
 					{
 						if (board[x] == 0)
 							break;
 					}
-					ravensArr[0].moveToTarget(x);
+					if(x<=5)
+					{
+						ravensArr[inteligencia.turno/2].moveToTarget(x);	
+						board[x]=1;
+					}
+					else
+					{
+						res = inteligencia.cuervo();
+						board[res[0]]=1;
+						ravensArr[inteligencia.turno/2].moveToTarget(res[0]);
+					}
+					inteligencia.turno++;
 				}
-				board[x] = 1;
-				//vulture.moveToTarget(inteligencia.cuervo());
+				else
+				{
+					trace(inteligencia.turno," mover");
+					res = inteligencia.cuervo();
+					for(x = 0; x < 7; x++)
+						if(ravensArr[x].currentTarget == res[1])
+						{
+							ravensArr[x].moveToTarget(res[0]);
+						}
+					board[res[1]]=0;
+					board[res[0]]=1;
+					inteligencia.turno++;
+				}
+				//buitres
+				trace(board);
+				if(inteligencia.ganador(board)==true)
+				{
+					trace("Los cuervos han ganado")
+					break;
+				}
+				x = inteligencia.buitre();
+				var y:int = vulture.currentTarget;
+				var z:int;
+				vulture.moveToTarget(x);
+				board[y] = 0;
+				board[x] = 2;
+				if(inteligencia.turno>1)// vemos que si al moverse brinco
+				{
+					var caminos:Array = map.getValue(y);					
+					for ( z = 0; z < caminos.length; z++ )
+						if (board[caminos[z]] == z)
+							break;
+					if(z == caminos.length)
+					{
+						var brincos:Array = Vmap.getValue(x);
+						for( z = 0; z < brincos.length; z++)
+							if(brincos[z][1]==y)
+							{
+								board[brincos[z][0]]=0;
+								break;
+							}
+					}
+				}
+				trace(x," ",y);
+				trace(board);
+				inteligencia.turno++;
+				
+				//vulture.moveToTarget(inteligencia.cuervo());d
 			}
 		}
 	}

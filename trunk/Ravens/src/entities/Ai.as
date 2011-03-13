@@ -7,51 +7,55 @@ package entities
 	 */
 	public class  Ai
 	{
-		var tablero:Array;
-		var turno:int;
-		var esquinas:Array;
-		var max:int;
-		var min:int;
-		var tope:int;
-		var map:HashMap;
-		public function AI(board:Array,mapa:HashMap)
+		public var tablero:Array;
+		public var turno:int;
+		public var max:int;
+		public var min:int;
+		public var tope:int;
+		public var map:HashMap;
+		public var a:int;
+		public var Cuervos:Array;
+		public var Buitre:Vulture;
+		public var Vmap:HashMap;
+		
+		public function Ai(board:Array, mapa:HashMap, arreglo:Array, wey:Vulture, vmap:HashMap)
 		{
 			tablero = board;
 			turno = 0;
-			esquinas = new Array();
 			max = 8;
 			min = -1;
 			tope = 3;
 			map = mapa;
+			this.Cuervos = arreglo;
+			this.Buitre = wey;
+			this.Vmap = vmap;
 		}
 		
-		public function cuervo()
+		public function cuervo():Array
 		{
-			busqueda(0,0,tablero,0);
-			turno++;
+			var res:Array = new Array();
+			res[0] = busqueda(0,0,tablero,0);
+			res[1] = a;
+			return res;
 		}
 		
-		public function buitre()
+		public function buitre():int
 		{
-			var res:Array;
-			if (turno == 1)
-				tablero[Math.floor(Math.random() * (10)) + 1] = 2;
-			else
-				res = busqueda(0, 1, tablero, 1);
-			turno++;
-			return res[0];
+			var res:int;			
+			res = busqueda(0, 1, tablero, 1);
+			return res;
 		}
 		
-		public function busqueda(nivel:int, jugador:int, estado:Array, tipo:int)
+		public function busqueda(nivel:int, jugador:int, estado:Array, tipo:int):int
 		{
-			var dest:Array;
-			dest = new Array();
+			var dest:int;
+			dest = -1;
 			var valor:int;
 			if(nivel%2 == 0	)
 				valor = min;
 			else
 				valor = max;
-			if (estado[0] == 3)
+			if (estado[0] >= 3)
 			{
 				if (tipo == 0)
 					return min;
@@ -59,59 +63,127 @@ package entities
 					return max;
 			}
 			var x:int;
-			for (x = 1; x <= 10; x++ )
+			var y:int;
+			var z:int;
+			if(ganador(estado)==true)
 			{
-				if (estado[x] == 2)
-				{
-					caminos:Array = mapa.getValues(x);
-					var y:int;
-					for (y = 0; y < caminos.lenght; x++ )
-					{
-						if (estado[caminos[y]] == 0)
-							break;
-					}
-					if (y == caminos.lenght)
-					{
-						if (tipo == 0)
-							return max;
-						else
-							return min;
-					}
-					break;
-				}
+				if (tipo == 0)
+					return max;
+				else
+					return min;
 			}
 			if(nivel == tope)
-				return evaluacion(estado);
-			arreglo:Array = new Array();
+			{
+				var t:int = evaluacion(estado);
+				if(tipo==0)
+					return t;
+				else
+					return 8-t;
+			}
+			var caminos:Array;
 			if (jugador == 1) // Buitre
 			{
-				caminos:Array = mapa.getValues(x);
-				for (var y:int = 0; y < caminos.lenght; x++ )
+				if(turno == 1)
 				{
-					if (estado[caminos[y]] == 0)
+					for (x = 1; x <= 10; x++ )
 					{
-						nuevo:Array = new Array();
-						for (var z:int = 0; z <= 10; z++ )
+						if(estado[x]==0)
 						{
-							nuevo[z] = estado[z];
-						}
-						nuevo[caminos[y]] = 2;
-						nuevo[x] = 0;
-						var tmp:int = busqueda(nivel + 1, (jugador + 1) % 2, nuevo, tipo);
-						if (nivel % 2 == 1)
-						{
-							if (tmp < valor)
+							var nuevo:Array = new Array();
+							for ( z = 0; z <= 10; z++ )
 							{
-								valor = tmp;
-								dest[0] = caminos[y];
+								nuevo[z] = estado[z];
+							}
+							nuevo[x]=2;
+							var tmp:int = busqueda(nivel + 1, (jugador + 1) % 2, nuevo, tipo);
+							if (nivel % 2 == 1)
+							{
+								if (tmp <= valor)
+								{
+									valor = tmp;
+									dest = x;
+								}
+							}
+							else
+							{
+								if (tmp >= valor)
+								{
+									valor = tmp;
+									dest = x;
+								}
 							}
 						}
-						else
-						{
-							if (tmp > valor)
+					}
+				}
+				else
+				{
+					for (x = 1; x <= 10; x++ )
+					{
+						if (estado[x] == 2)
+						{						
+							caminos = map.getValue(x);
+							for ( y = 0; y < caminos.length; y++ )
 							{
-								valor = tmp;
-								dest[0] = caminos[y];
+								if (estado[caminos[y]] == 0)
+								{
+									nuevo = new Array();
+									for ( z = 0; z <= 10; z++ )
+									{
+										nuevo[z] = estado[z];
+									}
+									nuevo[caminos[y]] = 2;
+									nuevo[x] = 0;
+									tmp = busqueda(nivel + 1, (jugador + 1) % 2, nuevo, tipo);
+									if (nivel % 2 == 1)
+									{
+										if (tmp <= valor)
+										{
+											valor = tmp;
+											dest = caminos[y];
+										}
+									}
+									else
+									{
+										if (tmp >= valor)
+										{
+											valor = tmp;
+											dest = caminos[y];
+										}
+									}
+								}							
+							}	
+							var brincos:Array = Vmap.getValue(x);
+							for( y = 0; y < brincos.length; y++)
+							{
+								if(estado[brincos[y][1]]==0&&estado[brincos[y][0]]==1)
+								{
+									nuevo = new Array();
+									for ( z = 0; z <= 10; z++ )
+									{
+										nuevo[z] = estado[z];
+									}
+									nuevo[0]++;
+									nuevo[brincos[y][1]] = 2;
+									nuevo[x] = 0;
+									nuevo[brincos[y][0]] = 0;
+									tmp = busqueda(nivel + 1, (jugador + 1) % 2, nuevo, tipo);
+									if (nivel % 2 == 1)
+									{
+										if (tmp <= valor)
+										{
+											valor = tmp;
+											dest = brincos[y][1];
+										}
+									}
+									else
+									{
+										if (tmp >= valor)
+										{
+											valor = tmp;
+											dest = brincos[y][1];
+										}
+									}
+								}
 							}
 						}
 					}
@@ -119,64 +191,104 @@ package entities
 			}
 			else // Cuervo
 			{
-				for (var x:int = 1; x <= 10; x++ )
+				if(turno+nivel<14)
 				{
-					if (estado[x] == 1)
+					for ( x = 1; x <= 10; x++ )
 					{
-						caminos:Array = mapa.getValues(x);
-						for (var y:int = 0; y < caminos.lenght; x++ )
+						if(estado[x]==0)
 						{
-							if (estado[caminos[y]] == 0)
+							nuevo = new Array();
+							for ( z = 0; z <= 10; z++ )
 							{
-								nuevo:Array = new Array();
-								for (var z:int = 0; z <= 10; z++ )
+								nuevo[z] = estado[z];
+							}
+							nuevo[x] = 1;
+							tmp = busqueda(nivel + 1, (jugador + 1) % 2, nuevo, tipo);
+							if (nivel % 2 == 1)
+							{
+								if (tmp <= valor)
 								{
-									nuevo[z] = estado[z];
+									valor = tmp;
+									dest = x;
+									a = 0;
 								}
-								nuevo[caminos[y]] = 1;
-								nuevo[x] = 0;
-								var tmp:int = busqueda(nivel + 1, (jugador + 1) % 2, nuevo, tipo);
-								if (nivel % 2 == 1)
+							}
+							else
+							{
+								if (tmp >= valor)
 								{
-									if (tmp < valor)
+									valor = tmp;
+									dest = x;
+									a = 0;
+								}
+							}
+						}
+					}
+				}
+				else
+				{
+					for ( x = 1; x <= 10; x++ )
+					{
+						if (estado[x] == 1)
+						{
+							caminos = map.getValue(x);
+							for ( y = 0; y < caminos.length; y++ )
+							{
+								if (estado[caminos[y]] == 0)
+								{
+									nuevo = new Array();
+									for ( z = 0; z <= 10; z++ )
 									{
-										valor = tmp;
-										dest[0] = caminos[y];
-										dest[1] = x;
+										nuevo[z] = estado[z];
 									}
-								}
-								else
-								{
-									if (tmp > valor)
+									nuevo[caminos[y]] = 1;
+									nuevo[x] = 0;
+									tmp = busqueda(nivel + 1, (jugador + 1) % 2, nuevo, tipo);									
+									if (nivel % 2 == 1)
 									{
-										valor = tmp;
-										dest[0] = caminos[y];
-										dest[1] = x;
+										if (tmp <= valor)
+										{
+											valor = tmp;
+											dest = caminos[y];
+											a = x;
+										}
+									}
+									else
+									{
+										if (tmp >= valor)
+										{
+											valor = tmp;
+											dest = caminos[y];
+											a = x;
+										}
 									}
 								}
 							}
 						}
-						break;
 					}
 				}
 			}
 			if(nivel > 0)
 				return valor;
 			else
+			{
+				if(dest == -1)
+					trace(turno," dest = 0: ",estado);
 				return dest;
+			}
 		}
 	
 		public function evaluacion(estado:Array):int
 		{
 			var k:int = 0;
 			var n:int = 0;
-			for (x = 1; x <= 10; x++ )
+			for (var x:int = 1; x <= 10; x++ )
 			{
 				if (estado[x] == 2)
 				{
-					caminos:Array = mapa.getValues(x);
+					var caminos:Array = map.getValue(x);
 					var y:int;
-					for (y = 0; y < caminos.lenght; x++ )
+					for (y = 0; y < caminos.length; y++ )
 					{
 						if (estado[caminos[y]] == 0)
 							k++;
@@ -189,8 +301,38 @@ package entities
 				{
 					n++;
 				}
-			}		
+			}	
 			return n - k;	
 		}
+		public function ganador(estado:Array):Boolean
+		{
+			var x:int;
+			for (x = 1; x <= 10; x++ )
+			{
+				if (estado[x] == 2)
+				{
+					var caminos:Array = map.getValue(x);
+					var y:int;
+					for (y = 0; y < caminos.length; y++ )
+					{
+						if (estado[caminos[y]] == 0)
+							return false;
+					}
+					var brincos:Array = Vmap.getValue(x);
+					for( y = 0; y < brincos.length; y++)
+					{
+						if(estado[brincos[y][1]]==0&&estado[brincos[y][0]]==1)
+						{
+							return false;							
+						}
+					}
+					break;
+				}				
+			}
+			if(x<11)
+				return true;
+			else
+				return false;
+		}	
 	}
 }

@@ -21,12 +21,14 @@
 			public function init():void
 			{
 				boardCanvas.addChild(board);
+				//board.PCvsPC();
 			}
 		]]>
 	</fx:Script>
 	
 	
 	<mx:Canvas  width="800" height="600" id="boardCanvas" backgroundColor="#003399">
+		<s:Button x="605" y="538" label="PC vs PC" click="board.PCvsPC()"/>
 		
 	</mx:Canvas>
 	<mx:Image source="../assets/tecmont.png" autoLoad="true" scaleContent="true" width="300" height="109" right="13" bottom="5"/>
