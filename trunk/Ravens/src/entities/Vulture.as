@@ -149,6 +149,7 @@ package entities
 					victims.push(adjacencies[i]);
 			}
 			
+			trace(this.victims);
 		}
 		
 		public function eatRaven():void
