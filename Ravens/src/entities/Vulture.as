@@ -5,7 +5,7 @@ package entities
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.utils.getDefinitionByName;
+	import flash.filters.DropShadowFilter;
 	
 	public class Vulture extends Sprite
 	{
@@ -32,12 +32,20 @@ package entities
 			circle.graphics.beginFill( 0x000000 );
 			
 			//circle.graphics.lineStyle( 1, 0, 0, true );
-			circle.graphics.lineStyle(1,0,1,false);
+			circle.graphics.lineStyle(3,0x222222,1,false);
 			// drawing circle 
 			circle.graphics.drawCircle(0,0, 25);
 			// repositioning shape
 			//circle.x = 40;                                 
 			//circle.y = 40;
+			
+			var myShadow:DropShadowFilter = new DropShadowFilter();
+			myShadow.distance = 3;
+			myShadow.color = 0x222222;
+			myShadow.blurX = 7;
+			myShadow.blurY = 7;
+			myShadow.quality = 3;
+			circle.filters = [myShadow];
 			
 			// adding displayobject to the display list
 			addChild( circle ); 
@@ -59,9 +67,9 @@ package entities
 				if(Board(this.parent).getPhase() == 2)
 				{
 					//actualizando la lista de casillas disponibles y legales
-					this.setVictims();
+					//this.setVictims();
 					//haciendo que se muestren en la parte gráfica
-					Board(this.parent).showVictims();
+					Board(this.parent).showVictims(this);
 				}
 			//}
 		}
@@ -113,14 +121,14 @@ package entities
 			newY = Target(Board(this.parent).targetArr[target-1]).y;
 			
 			TweenLite.to(this, 0.5, {x: newX, y: newY});
-			
+			this.currentTarget = target;
 		}
 		
-		/**
-		 * Actualiza las casillas disponibles para el buitre
-		 * 
-		public function setValidTargets():void
+		public function setVictims():void
 		{
+			Board(this.parent).updateBoard();
+			
+			
 			this.validTargets = [];
 			Board(this.parent).updateBoard();
 			var availableTargets:Array = Board(this.parent).map.getValue(this.currentTarget);
@@ -132,15 +140,10 @@ package entities
 					this.validTargets.push(availableTargets[i]);					
 				}
 			}
-			//trace("valid targets: ",this.validTargets);
-		}
-		*/
-		public function setVictims():void
-		{
-			Board(this.parent).updateBoard();
 			
 			//reseteando el arreglo de posibles víctimas
 			this.victims = [];
+			
 			
 			//var adjacencies:Array = Board(this.parent).map.getValue(this.currentTarget);
 			var hops:Array = Board(this.parent).Vmap.getValue(this.currentTarget);
@@ -149,12 +152,19 @@ package entities
 			var candidate2:Array = hops[1];
 			
 			if((Board(this.parent).board[candidate1[0]] == 1) && Board(this.parent).board[candidate1[1]] == 0)
+			{
 				this.victims.push(candidate1[0]);
+				this.validTargets.push(candidate1[1]);
+				trace("puedo comer a--> ",this.victims);
+			}
 			
 			if((Board(this.parent).board[candidate2[0]] == 1) && Board(this.parent).board[candidate2[1]] == 0)
+			{
 				this.victims.push(candidate2[0]);
+				this.validTargets.push(candidate2[1]);
+				trace("puedo comer a--> ",this.victims);
+			}
 			
-			trace("puedo comer a--> ",this.victims);
 		}
 		
 		public function eatRaven():void

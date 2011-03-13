@@ -5,7 +5,8 @@ package entities
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import flash.utils.getDefinitionByName;
+	import flash.filters.DropShadowFilter;
+	
 	
 	public class Raven extends Sprite
 	{
@@ -34,12 +35,20 @@ package entities
 		public function Raven()
 		{
 			// creating a new shape instance
-			var circle:Shape = new Shape( ); 
+			var circle:Shape = new Shape(); 
 			// starting color filling
 			circle.graphics.beginFill(0xffffff);
-			circle.graphics.lineStyle(1,0,1,false);
+			circle.graphics.lineStyle(3,0xcccccc,1,false);
 			// drawing circle 
 			circle.graphics.drawCircle(0,0, 25);
+			var myShadow:DropShadowFilter = new DropShadowFilter();
+			myShadow.distance = 3;
+			myShadow.color = 0x222222;
+			myShadow.blurX = 7;
+			myShadow.blurY = 7;
+			myShadow.quality = 3;
+			circle.filters = [myShadow];
+			
 			// adding displayobject to the display list
 			addChild( circle ); 
 		

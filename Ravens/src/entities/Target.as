@@ -3,13 +3,14 @@ package entities
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
-
+	import flash.filters.DropShadowFilter;
+	
 	public class Target extends Sprite
 	{
 		public var colorT:uint;
 		private var number:int;
 		
-		public function Target(number:int, colorT:uint = 0x008080)
+		public function Target(number:int, colorT:uint = 0x666666)
 		{
 			this.number = number;
 			this.colorT = colorT;
@@ -41,6 +42,14 @@ package entities
 			// repositioning shape
 			//circle.x = 40;                                 
 			//circle.y = 40;
+			
+			var myShadow:DropShadowFilter = new DropShadowFilter();
+			myShadow.distance = 1;
+			myShadow.color = 0x333333;
+			myShadow.blurX = 7;
+			myShadow.blurY = 7;
+			myShadow.quality = 3;
+			circle.filters = [myShadow];
 			
 			// adding displayobject to the display list
 			addChild( circle ); 
