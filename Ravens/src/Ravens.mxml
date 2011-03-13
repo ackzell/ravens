@@ -2,7 +2,10 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
 			   xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="955" minHeight="600"
-			   initialize="init()" viewSourceURL="srcview/index.html" preloaderChromeColor="#0096FF" pageTitle="Kaooa!">
+			   initialize="init()" viewSourceURL="srcview/index.html" pageTitle="Kaooa!" backgroundColor="#003399">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
@@ -23,8 +26,9 @@
 	</fx:Script>
 	
 	
-	<mx:Canvas  width="800" height="600" id="boardCanvas" backgroundColor="#FFFFFF">
+	<mx:Canvas  width="800" height="600" id="boardCanvas" backgroundColor="#003399">
 		
 	</mx:Canvas>
+	<mx:Image source="../assets/tecmont.png" autoLoad="true" scaleContent="true" width="300" height="109" right="13" bottom="5"/>
 	
 </s:Application>
