@@ -211,7 +211,6 @@ package entities
 		{
 			var newX:Number;
 			var newY:Number;
-			
 			newX = Target(Board(this.parent).targetArr[target-1]).x;
 			newY = Target(Board(this.parent).targetArr[target-1]).y;
 			
