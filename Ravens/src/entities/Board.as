@@ -63,7 +63,7 @@ package entities
 		 * */
 		public var turno:int;
 		
-		public var inteligencia:Ai;
+		//public var inteligencia:Ai;
 		
 		/**
 		 * Constructor de la clase.
@@ -169,8 +169,8 @@ package entities
 			map.put(9, new Array(10,4,2,7));
 			map.put(10, new Array(2,5,8,9));
 			
-			/*
-			/*determinando casillas disponibles desde cada "vértice" 
+			
+			/*determinando casillas disponibles desde cada target(casilla) */
 			Vmap = new HashMap();
 			Vmap.put(1 ,new Array(9,8));
 			Vmap.put(2 ,new Array(7,8));
@@ -183,8 +183,8 @@ package entities
 			Vmap.put(9 ,new Array(5,1));
 			Vmap.put(10 ,new Array(3,4));
 
-			*/
 			
+			/*
 			// comida del buitre
 			//par ([A, B], C) (de A a C se come a B)
 			Vmap = new HashMap();
@@ -208,7 +208,7 @@ package entities
 			Vmap.put([9,10],5);
 			Vmap.put([10,9],4);
 			Vmap.put([10,8],3);
-			
+			*/
 			
 			
 			/* Colocando los cuervos */
@@ -327,7 +327,7 @@ package entities
 					ravensArr[0].moveToTarget(x);
 				}
 				board[x] = 1;
-				vulture.moveToTarget(inteligencia.cuervo());
+				//vulture.moveToTarget(inteligencia.cuervo());
 			}
 		}
 	}
