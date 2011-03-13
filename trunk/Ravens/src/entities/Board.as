@@ -27,8 +27,7 @@ package entities
 		 * Para la posición 1, se tiene el par (1, [6, 7]) dado que desde la posición 1 podría haber movimiento hacia la posición 6 o la 7.
 		 * */
 		public var map:HashMap;
-		
-		
+				
 		public var Vmap:HashMap;
 		
 		/**
@@ -357,23 +356,9 @@ package entities
 				if(getPhase()==1)//jugada cuervo
 				{
 					trace(inteligencia.turno," poner");
-					var x:int;
-					for (x = 1; x <= 5 ; x++ )
-					{
-						if (board[x] == 0)
-							break;
-					}
-					if(x<=5)
-					{
-						ravensArr[inteligencia.turno/2].moveToTarget(x);	
-						board[x]=1;
-					}
-					else
-					{
-						res = inteligencia.cuervo();
-						board[res[0]]=1;
-						ravensArr[inteligencia.turno/2].moveToTarget(res[0]);
-					}
+					res = inteligencia.cuervo();
+					board[res[0]]=1;
+					ravensArr[inteligencia.turno/2].moveToTarget(res[0]);
 					inteligencia.turno++;
 				}
 				else
@@ -385,6 +370,7 @@ package entities
 						{
 							ravensArr[x].moveToTarget(res[0]);
 						}
+					trace(res[0],res[1]);
 					board[res[1]]=0;
 					board[res[0]]=1;
 					inteligencia.turno++;
@@ -419,7 +405,7 @@ package entities
 							}
 					}
 				}
-				trace(x," ",y);
+				trace(x,y);
 				trace(board);
 				inteligencia.turno++;
 				
