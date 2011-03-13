@@ -59,14 +59,14 @@ package entities
 			//si el cuervo está en posición de moverse
 			if(this.canMove == true)
 			{
-				if(Board(this.parent).turno == 1)
-				{
+				//if(Board(this.parent).turno == 1)
+				//{
 					//se arrastra
 					this.startDrag();
 					//trayendo encima de todo
 					this.parent.setChildIndex(this, this.parent.numChildren -1);
 					//cambiando el turno para que le toque al buitre
-				}
+				//}
 			}
 			
 			//trace("raven on: ",this.currentTarget);
@@ -79,7 +79,7 @@ package entities
 		 * */
 		private function mouseOver(e:MouseEvent):void
 		{
-			if(Board(this.parent).turno == 1)
+		//	if(Board(this.parent).turno == 1)
 			//determinando si estamos en la fase de mover
 			if(Board(this.parent).getPhase() == 2)
 			{
@@ -169,7 +169,7 @@ package entities
 				}
 			}
 			
-			Board(this.parent).checkState();
+			//Board(this.parent).checkState();
 			
 		}//function mouseUp
 	
