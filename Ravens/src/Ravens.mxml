@@ -9,6 +9,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			
+			//cambio
 			import entities.*;
 					
 			public var board:Board = new Board();
