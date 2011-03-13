@@ -327,7 +327,7 @@ package entities
 					ravensArr[0].moveToTarget(x);
 				}
 				board[x] = 1;
-				//vulture.moveToTarget(inteligencia.cuervo());
+				vulture.moveToTarget(inteligencia.cuervo());
 			}
 		}
 	}
