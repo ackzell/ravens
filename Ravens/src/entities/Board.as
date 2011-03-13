@@ -63,6 +63,8 @@ package entities
 		 * */
 		public var turno:int;
 		
+		public var inteligencia:Ai;
+		
 		/**
 		 * Constructor de la clase.
 		 * Coloca los "targets" en su posición en la interfaz gráfica.
@@ -227,12 +229,17 @@ package entities
 			addChild(vulture);
 			
 			
-			this.updateBoard();
 			
+			
+			this.updateBoard();			
+			
+			PCvsPC();
+			
+			//inteligencia = new Ai();
 			//ravensArr[1].moveToTarget(10);
 
 		}
-		
+			
 		/**
 		 * Mantiene el estado del juego.
 		 * Las posiciones de los cuervos y del buitre
@@ -255,7 +262,7 @@ package entities
 			board[vulture.currentTarget] = 2;
 			
 			//la primer posición del arreglo no se utiliza
-			board[0] = 99;
+			board[0] = 0;
 			
 		/*	for(i = 0; i <= 10; i++)
 				trace("board[",i,"]: ",board[i]);
@@ -302,6 +309,25 @@ package entities
 				//if((this.vulture.validTargets.length == 0) && (this.vulture.victims.length == 0))
 				if((this.vulture.validTargets.length == 0))
 					Alert.show("buitre pierde");
+			}
+		}
+		
+		public function PCvsPC():void
+		{
+			while(true)
+			{
+				if(getPhase()==1)//jugada cuervo
+				{
+					var x:int;
+					for (x = 1; x <= 5 ; x++ )
+					{
+						if (board[x] == 0)
+							break;
+					}
+					ravensArr[0].moveToTarget(x);
+				}
+				board[x] = 1;
+				//vulture.moveToTarget(inteligencia.cuervo());
 			}
 		}
 	}
